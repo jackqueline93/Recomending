@@ -1,0 +1,4 @@
+Comandos
+-entrar al env
+env\Scripts\activate
+flask run

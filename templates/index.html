@@ -1,0 +1,13 @@
+<html>
+    <BODY>
+        <H1>BUSCAR</H1>
+        <form method="POST" action="/buscar_recomendation">
+                <input type="text" name="viaje">
+                <input type="submit" value="Search">
+        </form>
+        <h1>Viajes Recomendados</h1>
+        {% for viaje in viajes %}
+            <p>{{viaje}}</p>
+        {% endfor %}
+    </BODY>
+</html>
