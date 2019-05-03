@@ -8,31 +8,32 @@ from sklearn.feature_extraction.text import CountVectorizer
 app= Flask(__name__)
 
 
-df = pd.read_csv('D:/Documentos/UPC/Inteligencia Artificial/content based filtering/Data/IMDB_Top250Engmovies2_OMDB_Detailed.csv')
+#df = pd.read_csv('D:/Documentos/UPC/Inteligencia Artificial/content based filtering/Data/Viaje/test.csv')
+df = pd.read_csv('D:/Documentos/UPC/Inteligencia Artificial/content based filtering/Data/Viaje/test.csv')
 df.shape
-df = df[['Title','Genre','Director','Actors','Plot']]
+df = df[['locationName','description','type','address','state']]
+df.shape
 
-df.shape
 
 # discarding the commas between the actors' full names and getting only the first three names
-df['Actors'] = df['Actors'].map(lambda x: x.split(',')[:3])
+df['address'] = df['address'].map(lambda x: x.split(',')[:3])
 
 # putting the genres in a list of words
-df['Genre'] = df['Genre'].map(lambda x: x.lower().split(','))
+#df['Genre'] = df['Genre'].map(lambda x: x.lower().split(','))
 
-df['Director'] = df['Director'].map(lambda x: x.split(' '))
+df['state'] = df['state'].map(lambda x: x.split(' '))
 
 # merging together first and last name for each actor and director, so it's considered as one word 
 # and there is no mix up between people sharing a first name
 for index, row in df.iterrows():
-    row['Actors'] = [x.lower().replace(' ','') for x in row['Actors']]
-    row['Director'] = ''.join(row['Director']).lower()
+    row['address'] = [x.lower().replace(' ','') for x in row['address']]
+    row['state'] = ''.join(row['state']).lower()
 
 # initializing the new column
 df['Key_words'] = ""
 
 for index, row in df.iterrows():
-    plot = row['Plot']
+    plot = row['description']
     
     # instantiating Rake, by default is uses english stopwords from NLTK
     # and discard all puntuation characters
@@ -48,16 +49,16 @@ for index, row in df.iterrows():
     row['Key_words'] = list(key_words_dict_scores.keys())
 
 # dropping the Plot column
-df.drop(columns = ['Plot'], inplace = True)
+df.drop(columns = ['description'], inplace = True)
 
-df.set_index('Title', inplace = True)
+df.set_index('locationName', inplace = True)
 
 df['bag_of_words'] = ''
 columns = df.columns
 for index, row in df.iterrows():
     words = ''
     for col in columns:
-        if col != 'Director':
+        if col != 'description':
             words = words + ' '.join(row[col])+ ' '
         else:
             words = words + row[col]+ ' '
